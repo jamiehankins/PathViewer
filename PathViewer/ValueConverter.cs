@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PathViewer.PathCommands;
+
+using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -30,6 +32,14 @@ internal class ValueConverter : IValueConverter
                 ? ifTrue
                 : ifFalse;
         }
+        
+        // Handle getting path data for a command with index
+        if (parameter is string param && param == "pathData" && value is PathCommand)
+        {
+            // This will be handled differently - we need access to the collection and index
+            return null;
+        }
+        
         return null;
     }
 

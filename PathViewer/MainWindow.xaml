@@ -196,13 +196,37 @@
                                    Height="{Binding Bounds.Height}"
                                    StrokeThickness=".2" StrokeDashArray="32 32"
                                    SnapsToDevicePixels="True"/>
-                            <Path  Canvas.Left="{Binding PathStartX}"
-                           Canvas.Top="{Binding PathStartY}"
-                           Stroke="{Binding StrokeColor}"
-                           StrokeThickness="{Binding StrokeThickness}"
-                           Fill="{Binding FillColor}"
-                           Data="{Binding Data}">
-                            </Path>
+                            <!-- Render each path segment individually -->
+                            <ItemsControl ItemsSource="{Binding PathSegments}"
+                                        Canvas.Left="{Binding PathStartX}"
+                                        Canvas.Top="{Binding PathStartY}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Path Stroke="{Binding DataContext.StrokeColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                              StrokeThickness="{Binding DataContext.StrokeThickness, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                              Fill="{Binding DataContext.FillColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                              Data="{Binding PathData}"
+                                              Cursor="Hand"
+                                              MouseLeftButtonDown="PathSegment_Click"
+                                              Tag="{Binding Command}">
+                                            <Path.Style>
+                                                <Style TargetType="Path">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Opacity" Value="0.7" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Path.Style>
+                                        </Path>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                             <!-- Highlight overlay for selected command -->
                             <Path Canvas.Left="{Binding PathStartX}"
                            Canvas.Top="{Binding PathStartY}"
@@ -211,7 +235,8 @@
                            Fill="Transparent"
                            Opacity="0.7"
                            Data="{Binding SelectedPathData}"
-                           Visibility="{Binding SelectedItem, Converter={StaticResource ValueConverter}}">
+                           Visibility="{Binding SelectedItem, Converter={StaticResource ValueConverter}}"
+                           IsHitTestVisible="False">
                             </Path>
                         </Canvas>
                     </Canvas>

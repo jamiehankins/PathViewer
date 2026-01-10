@@ -203,6 +203,16 @@
                            Fill="{Binding FillColor}"
                            Data="{Binding Data}">
                             </Path>
+                            <!-- Highlight overlay for selected command -->
+                            <Path Canvas.Left="{Binding PathStartX}"
+                           Canvas.Top="{Binding PathStartY}"
+                           Stroke="Orange"
+                           StrokeThickness="{Binding HighlightStrokeThickness}"
+                           Fill="Transparent"
+                           Opacity="0.7"
+                           Data="{Binding SelectedPathData}"
+                           Visibility="{Binding SelectedItem, Converter={StaticResource ValueConverter}}">
+                            </Path>
                         </Canvas>
                     </Canvas>
                 </Grid>

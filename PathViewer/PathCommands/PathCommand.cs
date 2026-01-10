@@ -24,6 +24,13 @@ public abstract class PathCommand : ObservableObject
         }
     }
 
+    private bool _isSelected;
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
+
     // Used to calculate size and position.
     public virtual bool HasX => false;
     public virtual bool HasY => false;

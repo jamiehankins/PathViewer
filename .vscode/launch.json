@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PathViewer",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/PathViewer/bin/Debug/net9.0-windows10.0.22621.0/PathViewer.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/PathViewer",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        }
+    ]
+}

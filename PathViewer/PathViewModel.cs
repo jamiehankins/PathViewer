@@ -25,6 +25,15 @@ public partial class PathViewModel : ViewModelBase
         Bounds = Geometry.Parse(Data).Bounds;
     }
 
+    // Generate individual path strings up to a specific command
+    public string GetPathUpToIndex(int index)
+    {
+        if (index < 0 || index >= PathCommands.Count)
+            return string.Empty;
+        
+        return string.Join(" ", PathCommands.Take(index + 1).Select(p => p.ToString()));
+    }
+
     private void ParseData(string data)
     {
         PathCommands.Clear();
@@ -251,13 +260,159 @@ public partial class PathViewModel : ViewModelBase
     [ObservableProperty]
     private int _strokeThickness = 2;
 
+    public double HighlightStrokeThickness => StrokeThickness + 4;
+
     [ObservableProperty]
     private string _fillColor = nameof(Colors.Transparent);
 
     public ObservableCollection<PathCommand> PathCommands { get; } = new();
 
-    [ObservableProperty]
     private PathCommand? _selectedItem;
+    public PathCommand? SelectedItem
+    {
+        get => _selectedItem;
+        set
+        {
+            if (_selectedItem != null)
+            {
+                _selectedItem.IsSelected = false;
+            }
+            if (SetProperty(ref _selectedItem, value) && value != null)
+            {
+                value.IsSelected = true;
+            }
+            OnPropertyChanged(nameof(SelectedPathData));
+        }
+    }
+
+    // Path data for highlighting the selected segment only
+    public string? SelectedPathData
+    {
+        get
+        {
+            if (SelectedIndex < 0 || SelectedIndex >= PathCommands.Count)
+                return null;
+            
+            // Calculate the current position before the selected command
+            double currentX = 0, currentY = 0;
+            
+            for (int i = 0; i < SelectedIndex; i++)
+            {
+                var cmd = PathCommands[i];
+                
+                // Update current position based on command type
+                if (cmd is PathCommands.Move move)
+                {
+                    if (move.IsAbsolute)
+                    {
+                        currentX = move.X;
+                        currentY = move.Y;
+                    }
+                    else
+                    {
+                        currentX += move.X;
+                        currentY += move.Y;
+                    }
+                }
+                else if (cmd is PathCommands.Line line)
+                {
+                    if (line.IsAbsolute)
+                    {
+                        currentX = line.EndX;
+                        currentY = line.EndY;
+                    }
+                    else
+                    {
+                        currentX += line.EndX;
+                        currentY += line.EndY;
+                    }
+                }
+                else if (cmd is PathCommands.HorizontalLine hline)
+                {
+                    if (hline.IsAbsolute)
+                        currentX = hline.EndX;
+                    else
+                        currentX += hline.EndX;
+                }
+                else if (cmd is PathCommands.VerticalLine vline)
+                {
+                    if (vline.IsAbsolute)
+                        currentY = vline.EndY;
+                    else
+                        currentY += vline.EndY;
+                }
+                else if (cmd is PathCommands.CubicBezier cubic)
+                {
+                    if (cubic.IsAbsolute)
+                    {
+                        currentX = cubic.EndX;
+                        currentY = cubic.EndY;
+                    }
+                    else
+                    {
+                        currentX += cubic.EndX;
+                        currentY += cubic.EndY;
+                    }
+                }
+                else if (cmd is PathCommands.QuadraticBezier quad)
+                {
+                    if (quad.IsAbsolute)
+                    {
+                        currentX = quad.EndX;
+                        currentY = quad.EndY;
+                    }
+                    else
+                    {
+                        currentX += quad.EndX;
+                        currentY += quad.EndY;
+                    }
+                }
+                else if (cmd is PathCommands.SmoothCubicBezier scubic)
+                {
+                    if (scubic.IsAbsolute)
+                    {
+                        currentX = scubic.EndX;
+                        currentY = scubic.EndY;
+                    }
+                    else
+                    {
+                        currentX += scubic.EndX;
+                        currentY += scubic.EndY;
+                    }
+                }
+                else if (cmd is PathCommands.SmoothQuadraticBezier squad)
+                {
+                    if (squad.IsAbsolute)
+                    {
+                        currentX = squad.EndX;
+                        currentY = squad.EndY;
+                    }
+                    else
+                    {
+                        currentX += squad.EndX;
+                        currentY += squad.EndY;
+                    }
+                }
+                else if (cmd is PathCommands.EllipticalArc arc)
+                {
+                    if (arc.IsAbsolute)
+                    {
+                        currentX = arc.EndX;
+                        currentY = arc.EndY;
+                    }
+                    else
+                    {
+                        currentX += arc.EndX;
+                        currentY += arc.EndY;
+                    }
+                }
+            }
+            
+            // Now create path with Move to current position + selected command
+            var selectedCommand = PathCommands[SelectedIndex].ToString();
+            return $"M{currentX},{currentY} {selectedCommand}";
+        }
+    }
 
     [ObservableProperty]
     private int _selectedIndex;

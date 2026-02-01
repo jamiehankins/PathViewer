@@ -98,12 +98,15 @@
                         Command="{Binding MovePathCommand}" />
                 </ToolBar>
             </Grid>
-            <ScrollViewer
+            <ScrollViewer x:Name="MainScrollViewer"
                 Width="{Binding ViewportSize.Width, Mode=OneWayToSource}"
                 Height="{Binding ViewportSize.Height, Mode=OneWayToSource}"
                 HorizontalScrollBarVisibility="Auto"
                 VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2" Margin="257,0,1,0"
-                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                PreviewMouseDown="ScrollViewer_PreviewMouseDown"
+                PreviewMouseUp="ScrollViewer_PreviewMouseUp"
+                PreviewMouseMove="ScrollViewer_PreviewMouseMove">
                 <Grid Margin="0">
                     <Border BorderBrush="Red" BorderThickness="10"
                         Visibility="{Binding PathError,Converter={StaticResource ValueConverter}}"
@@ -231,6 +234,21 @@
                     </Canvas>
                 </Grid>
             </ScrollViewer>
+            <!-- Pan indicator icon (shown when middle mouse button is held) -->
+            <Border x:Name="PanIndicator" Grid.Column="1"
+                    Visibility="Collapsed"
+                    IsHitTestVisible="False"
+                    Width="32" Height="32"
+                    CornerRadius="16"
+                    Background="#80000000"
+                    HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TextBlock Text="&#xE8AB;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="16"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
         </Grid>
         <StatusBar Grid.Row="3" HorizontalAlignment="Stretch">
             <StatusBar.ItemsPanel>
@@ -278,7 +296,7 @@
                     <Separator />
                     <TextBlock VerticalAlignment="Center" Margin="2 0">Zoom</TextBlock>
                     <Slider Orientation="Horizontal" Width="140" Minimum="0.01" Maximum="8.0" LargeChange="0.25" SmallChange="0.01" Value="{Binding Zoom}" VerticalAlignment="Center" />
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Zoom, StringFormat=P}" Margin="2 0" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Zoom, StringFormat={}{0:0.##%}}" Margin="2 0" />
                     <Button Command="{Binding ResetZoomCommand}" Width="Auto" Height="Auto">
                         <Button.Content>
                             <TextBlock FontSize="12" FontFamily="Segoe MDL2 Assets">&#xe72c;</TextBlock>

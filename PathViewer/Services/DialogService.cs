@@ -48,4 +48,13 @@ public class DialogService : IDialogService
             }
         }
     }
+
+    public MessageBoxResult ShowMessageBox(
+        string message,
+        string title,
+        MessageBoxButton buttons = MessageBoxButton.OK,
+        MessageBoxImage icon = MessageBoxImage.None)
+    {
+        return MessageBox.Show(message, title, buttons, icon);
+    }
 }

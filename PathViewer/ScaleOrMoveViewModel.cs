@@ -1,20 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using System;
+using PathViewer.Services;
+
 using System.Windows;
 
 namespace PathViewer;
 
 public partial class ScaleOrMoveViewModel : ViewModelBase
 {
-    // Design mode requires an empty contructor.
-    public ScaleOrMoveViewModel() : this(100, 100, false) { }
+    // Explicit parameterless constructor for XAML instantiation
+    public ScaleOrMoveViewModel() : this(100, 100, false, null) { }
 
     public ScaleOrMoveViewModel(
         double width,
         double height,
-        bool isScaleMode)
+        bool isScaleMode,
+        IDialogService? dialogService = null)
+        : base(dialogService)
     {
         IsScaleMode = isScaleMode;
         _updating = true;
@@ -87,7 +90,7 @@ public partial class ScaleOrMoveViewModel : ViewModelBase
     {
         if (IsScaleMode && (Width <= 0 || Height <= 0))
         {
-            if (MessageBoxResult.Cancel == MessageBox.Show(
+            if (MessageBoxResult.Cancel == _dialogService.ShowMessageBox(
                 "Your height and width must be greater than zero." + _eol + _eol
                 + "Press [OK] to edit values or [Cancel] to cancel the operation.",
                 "Invalid Parameters",

@@ -63,7 +63,6 @@ public partial class CubicBezier : PathCommand
         ([+-]?[\d]+(?:\.[\d]+)?(?:e[+-][\d]+)?)\s*,?\s*
         ([+-]?[\d]+(?:\.[\d]+)?(?:e[+-][\d]+)?)\s*,?\s*
         ([+-]?[\d]+(?:\.[\d]+)?(?:e[+-][\d]+)?)\s*,?\s*
-        ([+-]?[\d]+(?:\.[\d]+)?(?:e[+-][\d]+)?)\s*,?\s*
         ([+-]?[\d]+(?:\.[\d]+)?(?:e[+-][\d]+)?)",
         RegexOptions.IgnorePatternWhitespace);
 
@@ -79,8 +78,8 @@ public partial class CubicBezier : PathCommand
                 Control1Y = double.Parse(match.Groups[3].Value),
                 Control2X = double.Parse(match.Groups[4].Value),
                 Control2Y = double.Parse(match.Groups[5].Value),
-                EndX = double.Parse(match.Groups[5].Value),
-                EndY = double.Parse(match.Groups[6].Value)
+                EndX = double.Parse(match.Groups[6].Value),
+                EndY = double.Parse(match.Groups[7].Value)
             };
         }
         throw new ArgumentException($"Not a {nameof(CubicBezier)} command");

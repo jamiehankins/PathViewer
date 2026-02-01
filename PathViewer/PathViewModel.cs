@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 
 using PathViewer.PathCommands;
+using PathViewer.Services;
 
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,15 @@ namespace PathViewer;
 
 public partial class PathViewModel : ViewModelBase
 {
-    public PathViewModel()
+    private readonly IPreferencesService _preferencesService;
+
+    public PathViewModel(
+        IDialogService? dialogService = null,
+        IPreferencesService? preferencesService = null)
+        : base(dialogService)
     {
+        _preferencesService = preferencesService ?? new PreferencesService();
+
         // CommunityToolkit.MVVM doesn't subscribe to RequestSuggested,
         // so that makes change notifications a manual thing. This subverts that.
         FindRelayCommands();
@@ -30,7 +38,7 @@ public partial class PathViewModel : ViewModelBase
 
     private void LoadPreferences()
     {
-        var prefs = Preferences.Load();
+        var prefs = _preferencesService.Load();
         Theme = prefs.Theme;
         StrokeColor = prefs.StrokeColor;
         StrokeThickness = (int)prefs.StrokeThickness;
@@ -50,7 +58,7 @@ public partial class PathViewModel : ViewModelBase
             ShowOriginLines = ShowOriginLines,
             ShowBoundingBox = ShowBoundingBox
         };
-        prefs.Save();
+        _preferencesService.Save(prefs);
     }
 
     // Generate individual path strings up to a specific command
@@ -372,7 +380,7 @@ public partial class PathViewModel : ViewModelBase
     private bool SomethingSelected => SelectedIndex != -1;
     private bool HasCommands => PathCommands.Count > 0;
     private bool CanMoveUp => SelectedIndex > 0;
-    private bool CanMoveDown => SelectedIndex < PathCommands.Count - 1;
+    private bool CanMoveDown => SelectedIndex >= 0 && SelectedIndex < PathCommands.Count - 1;
     #endregion
     #endregion
 
@@ -565,7 +573,12 @@ public partial class PathViewModel : ViewModelBase
     }
 
     [ObservableProperty]
-    private int _selectedIndex;
+    private int _selectedIndex = -1;
+
+    partial void OnSelectedIndexChanged(int value)
+    {
+        SelectedItem = (value >= 0 && value < PathCommands.Count) ? PathCommands[value] : null;
+    }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanvasSize))]

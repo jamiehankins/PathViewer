@@ -1,12 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
+using PathViewer.Services;
 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 
@@ -14,8 +15,12 @@ namespace PathViewer;
 
 public class ViewModelBase : ObservableObject, IDisposable
 {
-    public ViewModelBase()
+    protected readonly IDialogService _dialogService;
+
+    public ViewModelBase(IDialogService? dialogService = null)
     {
+        _dialogService = dialogService ?? new DialogService();
+
         // Need the null check for design mode.
         if (Application.Current?.MainWindow is not null)
         {
@@ -32,48 +37,7 @@ public class ViewModelBase : ObservableObject, IDisposable
         }
     }
 
-    protected bool ShowModal(ViewModelBase vm, string title)
-    {
-        bool result;
-        Window window = new()
-        {
-            Content = vm,
-            Title = title,
-            SizeToContent = SizeToContent.WidthAndHeight,
-            Owner = Application.Current.MainWindow,
-            ResizeMode = ResizeMode.NoResize,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-            Resources = new ResourceDictionary
-            {
-                MergedDictionaries =
-                {
-                    new ResourceDictionary { Source = new Uri("Resources/ControlStyles.xaml", UriKind.Relative) }
-                }
-            }
-        };
-
-        try
-        {
-            window.KeyUp += OnKey;
-            result = window.ShowDialog() ?? false;
-        }
-        finally
-        {
-            window.KeyUp -= OnKey;
-        }
-
-        return result;
-
-        void OnKey(object? sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                e.Handled = true;
-                window.DialogResult = false;
-                window.Close();
-            }
-        }
-    }
+    protected bool ShowModal(ViewModelBase vm, string title) => _dialogService.ShowModal(vm, title);
 
     protected virtual void OnMainWindowClosing(object? sender, CancelEventArgs e)
     {

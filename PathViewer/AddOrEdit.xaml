@@ -7,6 +7,14 @@
     mc:Ignorable="d"
     MinWidth="160"
     d:DataContext="{d:DesignInstance local:AddOrEditViewModel, IsDesignTimeCreatable=True}">
+  <local:PopupBase.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Resources/ControlStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <local:ValueConverter x:Key="ValueConverter" />
+    </ResourceDictionary>
+  </local:PopupBase.Resources>
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto"/>

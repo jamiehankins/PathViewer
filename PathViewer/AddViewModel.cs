@@ -2,20 +2,24 @@
 using CommunityToolkit.Mvvm.Input;
 
 using PathViewer.PathCommands;
+using PathViewer.Services;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 
 namespace PathViewer;
 
 public partial class AddOrEditViewModel : ViewModelBase
 {
-    public AddOrEditViewModel()
-    {
-        // Hook up change notifications.
-        FindRelayCommands();
+    // Explicit parameterless constructor for XAML instantiation
+    public AddOrEditViewModel() : this((IDialogService?)null) { }
 
+    public AddOrEditViewModel(IDialogService? dialogService)
+        : base(dialogService)
+    {
         for (int i = 0; i < ValueCount; ++i)
         {
             ValueItem item = new();
@@ -34,9 +38,19 @@ public partial class AddOrEditViewModel : ViewModelBase
         // less grumpy.
         _type = ItemTypes[0];
         Type = ItemTypes.Where(t => t.Type == ItemType.Move).First();
+
+        // Design mode: skip runtime initialization
+        if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            return;
+
+        // Hook up change notifications - must be after Values/Flags are populated
+        // because FindRelayCommands reads all properties via reflection,
+        // including Command which accesses Values[0].
+        FindRelayCommands();
     }
 
-    public AddOrEditViewModel(PathCommand command) : this()
+    public AddOrEditViewModel(PathCommand command, IDialogService? dialogService = null)
+        : this((IDialogService?)dialogService)
     {
         Type = (from t in ItemTypes where t.Type == command.Type select t).First();
         switch (command.Type)

@@ -7,6 +7,7 @@ using PathViewer.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -18,12 +19,23 @@ public partial class PathViewModel : ViewModelBase
 {
     private readonly IPreferencesService _preferencesService;
 
+    // Explicit parameterless constructor for XAML instantiation
+    public PathViewModel() : this(null, null) { }
+
     public PathViewModel(
-        IDialogService? dialogService = null,
-        IPreferencesService? preferencesService = null)
+        IDialogService? dialogService,
+        IPreferencesService? preferencesService)
         : base(dialogService)
     {
         _preferencesService = preferencesService ?? new PreferencesService();
+
+        // Design mode: use sample data, skip runtime initialization
+        if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+        {
+            ParseData(Data);
+            Bounds = Geometry.Parse(Data).Bounds;
+            return;
+        }
 
         // CommunityToolkit.MVVM doesn't subscribe to RequestSuggested,
         // so that makes change notifications a manual thing. This subverts that.
@@ -562,12 +574,12 @@ public partial class PathViewModel : ViewModelBase
     }
 
     // Path data for highlighting the selected segment only
-    public string? SelectedPathData
+    public string SelectedPathData
     {
         get
         {
             if (SelectedIndex < 0 || SelectedIndex >= PathCommands.Count)
-                return null;
+                return string.Empty;
             return GetIndividualPathData(SelectedIndex);
         }
     }

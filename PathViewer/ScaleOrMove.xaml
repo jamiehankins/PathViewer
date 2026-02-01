@@ -4,12 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PathViewer"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DataContext="{d:DesignInstance local:ScaleOrMoveViewModel, IsDesignTimeCreatable=True}">
+    <local:PopupBase.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/ControlStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <local:ValueConverter x:Key="ValueConverter" />
+        </ResourceDictionary>
+    </local:PopupBase.Resources>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <TextBlock Style="{StaticResource label}" Text="{Binding WidthLabel}" />
-            <TextBox Style="{StaticResource field}" Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Style="{StaticResource textField}" Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
                      PreviewTextInput="OnNumericInput" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" Visibility="{Binding IsScaleMode, Converter={StaticResource ValueConverter}}">
@@ -18,7 +26,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBlock Style="{StaticResource label}" Text="{Binding HeightLabel}" />
-            <TextBox Style="{StaticResource field}" Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Style="{StaticResource textField}" Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"
                      PreviewTextInput="OnNumericInput" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

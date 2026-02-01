@@ -21,8 +21,36 @@ public partial class PathViewModel : ViewModelBase
         // so that makes change notifications a manual thing. This subverts that.
         FindRelayCommands();
 
+        // Load preferences
+        LoadPreferences();
+
         ParseData(Data);
         Bounds = Geometry.Parse(Data).Bounds;
+    }
+
+    private void LoadPreferences()
+    {
+        var prefs = Preferences.Load();
+        Theme = prefs.Theme;
+        StrokeColor = prefs.StrokeColor;
+        StrokeThickness = (int)prefs.StrokeThickness;
+        FillColor = prefs.FillColor;
+        ShowOriginLines = prefs.ShowOriginLines;
+        ShowBoundingBox = prefs.ShowBoundingBox;
+    }
+
+    private void SavePreferences()
+    {
+        var prefs = new Preferences
+        {
+            Theme = Theme,
+            StrokeColor = StrokeColor,
+            StrokeThickness = StrokeThickness,
+            FillColor = FillColor,
+            ShowOriginLines = ShowOriginLines,
+            ShowBoundingBox = ShowBoundingBox
+        };
+        prefs.Save();
     }
 
     // Generate individual path strings up to a specific command
@@ -394,11 +422,55 @@ public partial class PathViewModel : ViewModelBase
         }
     }
 
-    [ObservableProperty]
-    private bool _showOriginLines = true;
+    public List<string> ThemesList => new() { "System", "Light", "Dark" };
 
-    [ObservableProperty]
+    private string _theme = "System";
+    public string Theme
+    {
+        get => _theme;
+        set
+        {
+            if (SetProperty(ref _theme, value))
+            {
+                ApplyTheme(value);
+                SavePreferences();
+            }
+        }
+    }
+
+    private void ApplyTheme(string theme)
+    {
+        if (Application.Current is App app)
+        {
+            app.SetTheme(theme);
+        }
+    }
+
+    private bool _showOriginLines = true;
+    public bool ShowOriginLines
+    {
+        get => _showOriginLines;
+        set
+        {
+            if (SetProperty(ref _showOriginLines, value))
+            {
+                SavePreferences();
+            }
+        }
+    }
+
     private bool _showBoundingBox = true;
+    public bool ShowBoundingBox
+    {
+        get => _showBoundingBox;
+        set
+        {
+            if (SetProperty(ref _showBoundingBox, value))
+            {
+                SavePreferences();
+            }
+        }
+    }
 
     [ObservableProperty]
     private double _zoom = 1.0;
@@ -407,16 +479,47 @@ public partial class PathViewModel : ViewModelBase
 
     public static List<int> Thicknesses => Enumerable.Range(1, 20).ToList();
 
-    [ObservableProperty]
     private string _strokeColor = nameof(Colors.Black);
+    public string StrokeColor
+    {
+        get => _strokeColor;
+        set
+        {
+            if (SetProperty(ref _strokeColor, value))
+            {
+                SavePreferences();
+            }
+        }
+    }
 
-    [ObservableProperty]
     private int _strokeThickness = 2;
+    public int StrokeThickness
+    {
+        get => _strokeThickness;
+        set
+        {
+            if (SetProperty(ref _strokeThickness, value))
+            {
+                SavePreferences();
+                OnPropertyChanged(nameof(HighlightStrokeThickness));
+            }
+        }
+    }
 
     public double HighlightStrokeThickness => StrokeThickness + 4;
 
-    [ObservableProperty]
     private string _fillColor = nameof(Colors.Transparent);
+    public string FillColor
+    {
+        get => _fillColor;
+        set
+        {
+            if (SetProperty(ref _fillColor, value))
+            {
+                SavePreferences();
+            }
+        }
+    }
 
     public ObservableCollection<PathCommand> PathCommands { get; } = new();
 
@@ -438,11 +541,11 @@ public partial class PathViewModel : ViewModelBase
         get => _selectedItem;
         set
         {
-            if (_selectedItem != null)
+            if (_selectedItem is not null)
             {
                 _selectedItem.IsSelected = false;
             }
-            if (SetProperty(ref _selectedItem, value) && value != null)
+            if (SetProperty(ref _selectedItem, value) && value is not null)
             {
                 value.IsSelected = true;
             }

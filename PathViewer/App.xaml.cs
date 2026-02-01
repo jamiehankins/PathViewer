@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace PathViewer
 {
@@ -13,5 +7,25 @@ namespace PathViewer
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            
+            // Load and apply saved theme
+            var prefs = Preferences.Load();
+            SetTheme(prefs.Theme);
+        }
+
+        public void SetTheme(string theme)
+        {
+#pragma warning disable WPF0001
+            ThemeMode = theme switch
+            {
+                "Light" => ThemeMode.Light,
+                "Dark" => ThemeMode.Dark,
+                _ => ThemeMode.System
+            };
+#pragma warning restore WPF0001
+        }
     }
 }

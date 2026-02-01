@@ -6,6 +6,7 @@
         <UseWPF>true</UseWPF>
         <Nullable>enable</Nullable>
         <ApplicationIcon>Resources\PathViewer.ico</ApplicationIcon>
+        <NoWarn>$(NoWarn);WPF0001</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

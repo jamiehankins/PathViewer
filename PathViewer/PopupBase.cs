@@ -22,7 +22,7 @@ public class PopupBase : UserControl
             _viewModel.CloseEvent += OnClose;
         }
         _parent = Window.GetWindow(this);
-        if (_parent != null)
+        if (_parent is not null)
         {
             _parent.Closing += OnClosing;
             Loaded -= OnLoaded;
@@ -40,13 +40,13 @@ public class PopupBase : UserControl
 
     private void OnClosing(object? sender, CancelEventArgs e)
     {
-        if (_viewModel != null)
+        if (_viewModel is not null)
         {
             // Null coalescing doesn't work with events, so we have to do
             // this the long way.
             _viewModel.CloseEvent -= OnClose;
         }
-        if (_parent != null)
+        if (_parent is not null)
         {
             _parent.Closing -= OnClosing;
         }

@@ -42,7 +42,14 @@ public class ViewModelBase : ObservableObject, IDisposable
             SizeToContent = SizeToContent.WidthAndHeight,
             Owner = Application.Current.MainWindow,
             ResizeMode = ResizeMode.NoResize,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Resources = new ResourceDictionary
+            {
+                MergedDictionaries =
+                {
+                    new ResourceDictionary { Source = new Uri("Resources/ControlStyles.xaml", UriKind.Relative) }
+                }
+            }
         };
 
         try

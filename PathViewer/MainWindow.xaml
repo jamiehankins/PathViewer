@@ -45,7 +45,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock>Data</TextBlock>
-                    <TextBox Grid.Column="1" BorderBrush="DarkGray" HorizontalAlignment="Stretch" BorderThickness="1" Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" Padding="4" />
+                    <TextBox x:Name="PathDataTextBox" Grid.Column="1" BorderBrush="DarkGray" HorizontalAlignment="Stretch" BorderThickness="1" Text="{Binding Data, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" Padding="4" />
                 </Grid>
             </ToolBar>
         </DockPanel>

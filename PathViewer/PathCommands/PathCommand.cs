@@ -31,6 +31,10 @@ public abstract class PathCommand : ObservableObject
         set => SetProperty(ref _isSelected, value);
     }
 
+    // Position tracking for text selection
+    public int SourceIndex { get; set; }
+    public int SourceLength { get; set; }
+
     // Used to calculate size and position.
     public virtual bool HasX => false;
     public virtual bool HasY => false;

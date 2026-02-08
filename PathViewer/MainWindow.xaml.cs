@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -24,6 +25,48 @@ namespace PathViewer
         {
             InitializeComponent();
             Loaded += MainWindow_Loaded;
+
+            // Subscribe to ViewModel property changes for text selection sync
+            if (DataContext is PathViewModel viewModel)
+            {
+                viewModel.PropertyChanged += ViewModel_PropertyChanged;
+            }
+            DataContextChanged += (s, e) =>
+            {
+                if (e.OldValue is PathViewModel oldVm)
+                    oldVm.PropertyChanged -= ViewModel_PropertyChanged;
+                if (e.NewValue is PathViewModel newVm)
+                    newVm.PropertyChanged += ViewModel_PropertyChanged;
+            };
+        }
+
+        private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PathViewModel.TextSelectionStart) ||
+                e.PropertyName == nameof(PathViewModel.TextSelectionLength))
+            {
+                UpdateTextBoxSelection();
+            }
+        }
+
+        private void UpdateTextBoxSelection()
+        {
+            if (DataContext is PathViewModel viewModel)
+            {
+                var start = viewModel.TextSelectionStart;
+                var length = viewModel.TextSelectionLength;
+
+                // Ensure values are within bounds
+                if (start >= 0 && start <= PathDataTextBox.Text.Length)
+                {
+                    var maxLength = Math.Min(length, PathDataTextBox.Text.Length - start);
+                    if (maxLength >= 0)
+                    {
+                        PathDataTextBox.Select(start, maxLength);
+                        PathDataTextBox.Focus();
+                    }
+                }
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)

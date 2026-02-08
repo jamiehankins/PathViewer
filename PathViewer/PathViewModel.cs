@@ -234,7 +234,10 @@ public partial class PathViewModel : ViewModelBase
         {
             try
             {
-                PathCommands.Add(PathCommand.Parse(match.Groups[0].Value));
+                var command = PathCommand.Parse(match.Groups[0].Value);
+                command.SourceIndex = match.Index;
+                command.SourceLength = match.Length;
+                PathCommands.Add(command);
             }
             catch (Exception ex)
             {
@@ -590,6 +593,28 @@ public partial class PathViewModel : ViewModelBase
     partial void OnSelectedIndexChanged(int value)
     {
         SelectedItem = (value >= 0 && value < PathCommands.Count) ? PathCommands[value] : null;
+        UpdateTextSelection();
+    }
+
+    [ObservableProperty]
+    private int _textSelectionStart;
+
+    [ObservableProperty]
+    private int _textSelectionLength;
+
+    private void UpdateTextSelection()
+    {
+        if (SelectedIndex >= 0 && SelectedIndex < PathCommands.Count)
+        {
+            var command = PathCommands[SelectedIndex];
+            TextSelectionStart = command.SourceIndex;
+            TextSelectionLength = command.SourceLength;
+        }
+        else
+        {
+            TextSelectionStart = 0;
+            TextSelectionLength = 0;
+        }
     }
 
     [ObservableProperty]

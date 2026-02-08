@@ -199,23 +199,47 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Path Stroke="{Binding DataContext.StrokeColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                              StrokeThickness="{Binding DataContext.StrokeThickness, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                              Fill="{Binding DataContext.FillColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                              Data="{Binding PathData}"
-                                              Cursor="Hand"
-                                              MouseLeftButtonDown="PathSegment_Click"
-                                              Tag="{Binding Command}">
-                                            <Path.Style>
-                                                <Style TargetType="Path">
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Opacity" Value="0.7" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Path.Style>
-                                        </Path>
+                                        <Canvas>
+                                            <Path Stroke="{Binding DataContext.StrokeColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  StrokeThickness="{Binding DataContext.StrokeThickness, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  Fill="{Binding DataContext.FillColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                  Data="{Binding PathData}"
+                                                  Cursor="Hand"
+                                                  MouseLeftButtonDown="PathSegment_Click"
+                                                  Tag="{Binding Command}">
+                                                <Path.Style>
+                                                    <Style TargetType="Path">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Opacity" Value="0.7" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Path.Style>
+                                            </Path>
+                                            <!-- Node indicator for non-drawing commands -->
+                                            <Ellipse Width="8" Height="8"
+                                                     Canvas.Left="{Binding NodeX}"
+                                                     Canvas.Top="{Binding NodeY}"
+                                                     Margin="-4,-4,0,0"
+                                                     Stroke="{Binding DataContext.StrokeColor, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                     StrokeThickness="1"
+                                                     Fill="White"
+                                                     Cursor="Hand"
+                                                     MouseLeftButtonDown="PathSegment_Click"
+                                                     Tag="{Binding Command}"
+                                                     Visibility="{Binding ShowNode, Converter={StaticResource ValueConverter}}">
+                                                <Ellipse.Style>
+                                                    <Style TargetType="Ellipse">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Opacity" Value="0.7" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Ellipse.Style>
+                                            </Ellipse>
+                                        </Canvas>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -230,6 +254,17 @@
                                 Visibility="{Binding SelectedItem, Converter={StaticResource ValueConverter}}"
                                 IsHitTestVisible="False">
                             </Path>
+                            <!-- Highlight overlay for selected node (Move/Close commands) -->
+                            <Ellipse Width="14" Height="14"
+                                     Canvas.Left="{Binding SelectedNodeCanvasX}"
+                                     Canvas.Top="{Binding SelectedNodeCanvasY}"
+                                     Margin="-7,-7,0,0"
+                                     Stroke="{DynamicResource {x:Static SystemColors.AccentColorBrushKey}}"
+                                     StrokeThickness="3"
+                                     Fill="Transparent"
+                                     Opacity="0.7"
+                                     Visibility="{Binding ShowSelectedNode, Converter={StaticResource ValueConverter}}"
+                                     IsHitTestVisible="False" />
                         </Canvas>
                     </Canvas>
                 </Grid>

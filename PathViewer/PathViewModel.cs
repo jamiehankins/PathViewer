@@ -551,10 +551,50 @@ public partial class PathViewModel : ViewModelBase
     private void RefreshPathSegments()
     {
         PathSegments.Clear();
+        double currentX = 0, currentY = 0;
+        double subpathStartX = 0, subpathStartY = 0;
+
         for (int i = 0; i < PathCommands.Count; i++)
         {
+            var cmd = PathCommands[i];
             var pathData = GetIndividualPathData(i);
-            PathSegments.Add(new PathSegmentViewModel(PathCommands[i], pathData, i));
+            var segment = new PathSegmentViewModel(cmd, pathData, i);
+
+            // Calculate node position for non-drawing commands
+            if (cmd is PathCommands.Move move)
+            {
+                if (move.IsAbsolute)
+                {
+                    currentX = move.X;
+                    currentY = move.Y;
+                }
+                else
+                {
+                    currentX += move.X;
+                    currentY += move.Y;
+                }
+                subpathStartX = currentX;
+                subpathStartY = currentY;
+
+                segment.ShowNode = true;
+                segment.NodeX = currentX;
+                segment.NodeY = currentY;
+            }
+            else if (cmd is PathCommands.Close)
+            {
+                segment.ShowNode = true;
+                segment.NodeX = subpathStartX;
+                segment.NodeY = subpathStartY;
+                currentX = subpathStartX;
+                currentY = subpathStartY;
+            }
+            else
+            {
+                // Update current position for drawing commands
+                UpdatePosition(cmd, ref currentX, ref currentY);
+            }
+
+            PathSegments.Add(segment);
         }
     }
 
@@ -587,6 +627,41 @@ public partial class PathViewModel : ViewModelBase
         }
     }
 
+    // Node highlight for selected non-drawing commands
+    public bool ShowSelectedNode
+    {
+        get
+        {
+            if (SelectedIndex < 0 || SelectedIndex >= PathSegments.Count)
+                return false;
+            return PathSegments[SelectedIndex].ShowNode;
+        }
+    }
+
+    public double SelectedNodeX
+    {
+        get
+        {
+            if (SelectedIndex < 0 || SelectedIndex >= PathSegments.Count)
+                return 0;
+            return PathSegments[SelectedIndex].NodeX;
+        }
+    }
+
+    public double SelectedNodeY
+    {
+        get
+        {
+            if (SelectedIndex < 0 || SelectedIndex >= PathSegments.Count)
+                return 0;
+            return PathSegments[SelectedIndex].NodeY;
+        }
+    }
+
+    // Canvas-relative position for node highlight
+    public double SelectedNodeCanvasX => PathStartX + SelectedNodeX;
+    public double SelectedNodeCanvasY => PathStartY + SelectedNodeY;
+
     [ObservableProperty]
     private int _selectedIndex = -1;
 
@@ -594,6 +669,11 @@ public partial class PathViewModel : ViewModelBase
     {
         SelectedItem = (value >= 0 && value < PathCommands.Count) ? PathCommands[value] : null;
         UpdateTextSelection();
+        OnPropertyChanged(nameof(ShowSelectedNode));
+        OnPropertyChanged(nameof(SelectedNodeX));
+        OnPropertyChanged(nameof(SelectedNodeY));
+        OnPropertyChanged(nameof(SelectedNodeCanvasX));
+        OnPropertyChanged(nameof(SelectedNodeCanvasY));
     }
 
     [ObservableProperty]

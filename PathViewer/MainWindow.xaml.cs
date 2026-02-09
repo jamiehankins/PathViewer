@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Controls;
-using System.Windows.Shapes;
 using PathViewer.PathCommands;
 
 namespace PathViewer
@@ -51,22 +50,25 @@ namespace PathViewer
 
         private void UpdateTextBoxSelection()
         {
-            if (DataContext is PathViewModel viewModel)
+            // Defer to allow mouse click events to finish routing before we take focus
+            Dispatcher.BeginInvoke(() =>
             {
-                var start = viewModel.TextSelectionStart;
-                var length = viewModel.TextSelectionLength;
-
-                // Ensure values are within bounds
-                if (start >= 0 && start <= PathDataTextBox.Text.Length)
+                if (DataContext is PathViewModel viewModel)
                 {
-                    var maxLength = Math.Min(length, PathDataTextBox.Text.Length - start);
-                    if (maxLength >= 0)
+                    var start = viewModel.TextSelectionStart;
+                    var length = viewModel.TextSelectionLength;
+
+                    if (start >= 0 && start <= PathDataTextBox.Text.Length)
                     {
-                        PathDataTextBox.Select(start, maxLength);
-                        PathDataTextBox.Focus();
+                        var maxLength = Math.Min(length, PathDataTextBox.Text.Length - start);
+                        if (maxLength >= 0)
+                        {
+                            PathDataTextBox.Select(start, maxLength);
+                            PathDataTextBox.Focus();
+                        }
                     }
                 }
-            }
+            });
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -108,7 +110,7 @@ namespace PathViewer
 
         private void PathSegment_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Path path && path.Tag is PathCommand command)
+            if (sender is FrameworkElement { Tag: PathCommand command })
             {
                 var viewModel = DataContext as PathViewModel;
                 if (viewModel is null) return;

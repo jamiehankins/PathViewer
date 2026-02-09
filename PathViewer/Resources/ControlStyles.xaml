@@ -4,8 +4,7 @@
     <!-- Label style for form fields -->
     <Style x:Key="label" TargetType="TextBlock">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="2" />
-        <Setter Property="Width" Value="80" />
+        <Setter Property="Margin" Value="4 4 8 4" />
         <Setter Property="TextAlignment" Value="Right" />
         <Setter Property="FontSize" Value="12" />
     </Style>
@@ -13,8 +12,9 @@
     <!-- Text field style - inherits from Fluent TextBox style -->
     <Style x:Key="textField" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="2" />
-        <Setter Property="Width" Value="80" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="MinWidth" Value="80" />
     </Style>
 
     <!-- Base icon button style for toolbar buttons with Segoe MDL2 Assets icons -->
@@ -41,7 +41,7 @@
     <!-- Icon toggle button style -->
     <Style x:Key="iconToggle" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="2" />
+        <Setter Property="Margin" Value="4" />
         <Setter Property="Padding" Value="4" />
         <Setter Property="ContentTemplate">
             <Setter.Value>

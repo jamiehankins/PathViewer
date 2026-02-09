@@ -13,6 +13,7 @@ public class DialogService : IDialogService
         {
             Content = viewModel,
             Title = title,
+            MinWidth = 250,
             SizeToContent = SizeToContent.WidthAndHeight,
             Owner = Application.Current.MainWindow,
             ResizeMode = ResizeMode.NoResize,

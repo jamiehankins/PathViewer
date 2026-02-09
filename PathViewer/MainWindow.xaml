@@ -75,13 +75,13 @@
                     <Button Style="{StaticResource iconButton}" Content="&#xe291;"
                         ToolTip="Inserts a new item to the data collection before the current selection."
                         Command="{Binding InsertItemCommand}" />
-                    <Button Style="{StaticResource iconButton}" Content="&#xe107;"
+                    <Button Style="{StaticResource iconButton}" Content="&#xe106;"
                         ToolTip="Remove the selected item from the data collection."
                         Command="{Binding DeleteCommand}" />
                     <Button Style="{StaticResource iconButton}" Content="&#xe104;"
                         ToolTip="Edit the selected item."
                         Command="{Binding EditCommand}" />
-                    <Button Style="{StaticResource iconButton}" Content="&#xe106;"
+                    <Button Style="{StaticResource iconButton}" Content="&#xe107;"
                         ToolTip="Remove all items from the data collection."
                         Command="{Binding ClearCommand}" />
                     <Button Style="{StaticResource iconButton}" Content="&#xe110;"
@@ -131,11 +131,11 @@
                         <Canvas.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding Zoom}" ScaleY="{Binding Zoom}" />
                         </Canvas.LayoutTransform>
-                        <Line Stroke="Red" StrokeDashArray="4 8"
+                        <Line Stroke="{DynamicResource TextFillColorTertiaryBrush}" StrokeDashArray="4 8"
                           Canvas.Top="{Binding ZeroOrigin.Y}"
                           Visibility="{Binding ShowOriginLines, Converter={StaticResource ValueConverter}}"
                           X1="0" X2="{Binding RelativeSource={RelativeSource AncestorType=Canvas},Path=ActualWidth}" />
-                        <Line Stroke="Red" StrokeDashArray="4 8"
+                        <Line Stroke="{DynamicResource TextFillColorTertiaryBrush}" StrokeDashArray="4 8"
                           Canvas.Left="{Binding ZeroOrigin.X}"
                           Visibility="{Binding ShowOriginLines, Converter={StaticResource ValueConverter}}"
                           Y1="0" Y2="{Binding RelativeSource={RelativeSource AncestorType=Canvas},Path=ActualHeight}" />
@@ -180,13 +180,13 @@
                                     </MultiBinding>
                                 </TextBlock.Text>
                             </TextBlock>
-                            <Rectangle Stroke="Blue"
+                            <Rectangle Stroke="{DynamicResource TextFillColorTertiaryBrush}"
                                    Visibility="{Binding ShowBoundingBox, Converter={StaticResource ValueConverter}}"
                                    Canvas.Left="{Binding PathMargin}"
                                    Canvas.Top="{Binding PathMargin}"
                                    Width="{Binding Bounds.Width}"
                                    Height="{Binding Bounds.Height}"
-                                   StrokeThickness=".2" StrokeDashArray="32 32"
+                                   StrokeThickness="1" StrokeDashArray="4 4"
                                    SnapsToDevicePixels="True"/>
                             <!-- Render each path segment individually -->
                             <ItemsControl ItemsSource="{Binding PathSegments}"

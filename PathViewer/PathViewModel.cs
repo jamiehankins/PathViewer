@@ -362,7 +362,7 @@ public partial class PathViewModel : ViewModelBase
     private void ScalePath()
     {
         ScaleOrMoveViewModel vm = new(PathWidth, PathHeight, true);
-        if (ShowModal(vm, "ScalePath Path"))
+        if (ShowModal(vm, "Scale Path"))
         {
             double scaleX = vm.Width / PathWidth;
             double scaleY = vm.Height / PathHeight;
@@ -379,7 +379,7 @@ public partial class PathViewModel : ViewModelBase
     private void MovePath()
     {
         ScaleOrMoveViewModel vm = new(-Origin.X, -Origin.Y, false);
-        if (ShowModal(vm, "ScalePath Path"))
+        if (ShowModal(vm, "Move Path (Relative)"))
         {
             foreach (PathCommand cmd in PathCommands)
             {
@@ -744,7 +744,7 @@ public partial class PathViewModel : ViewModelBase
 
     public double PathStartY => -Bounds.Y + PathMargin;
 
-    public Point ZeroOrigin => new(-Bounds.X, -Bounds.Y);
+    public Point ZeroOrigin => new(-Bounds.X + PathMargin, -Bounds.Y + PathMargin);
 
     public double LeftLabel => PathMargin / 2;
     public double RightLabel => Bounds.Width + PathMargin * 1.5;

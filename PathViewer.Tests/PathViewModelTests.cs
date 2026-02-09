@@ -36,6 +36,28 @@ public class PathViewModelTests
 
         Assert.Equal(-1, viewModel.SelectedIndex);
     }
+
+    [Fact]
+    public void ZeroOrigin_MatchesPathStart()
+    {
+        var viewModel = CreateViewModel();
+
+        Assert.Equal(viewModel.PathStartX, viewModel.ZeroOrigin.X);
+        Assert.Equal(viewModel.PathStartY, viewModel.ZeroOrigin.Y);
+    }
+
+    [Theory]
+    [InlineData("M0,0 L100,100")]
+    [InlineData("M50,50 L150,150")]
+    [InlineData("M-10,-20 L30,40")]
+    public void ZeroOrigin_MatchesPathStart_ForVariousPaths(string data)
+    {
+        var viewModel = CreateViewModel();
+        viewModel.Data = data;
+
+        Assert.Equal(viewModel.PathStartX, viewModel.ZeroOrigin.X);
+        Assert.Equal(viewModel.PathStartY, viewModel.ZeroOrigin.Y);
+    }
 }
 
 public class CanExecutePredicateTests

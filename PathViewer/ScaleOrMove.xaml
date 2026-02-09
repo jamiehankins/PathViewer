@@ -14,24 +14,31 @@
             <local:ValueConverter x:Key="ValueConverter" />
         </ResourceDictionary>
     </local:PopupBase.Resources>
-    <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Style="{StaticResource label}" Text="{Binding WidthLabel}" />
-            <TextBox Style="{StaticResource textField}" Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
-                     PreviewTextInput="OnNumericInput" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Visibility="{Binding IsScaleMode, Converter={StaticResource ValueConverter}}">
-            <TextBlock>Lock Aspect Ratio</TextBlock>
+    <Grid Margin="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Style="{StaticResource label}" Text="{Binding WidthLabel}" />
+        <TextBox Grid.Column="1" Style="{StaticResource textField}" Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}"
+                 PreviewTextInput="OnNumericInput" />
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal"
+                    Visibility="{Binding IsScaleMode, Converter={StaticResource ValueConverter}}">
+            <TextBlock VerticalAlignment="Center" Margin="4">Lock Aspect Ratio</TextBlock>
             <ToggleButton Style="{StaticResource iconToggle}" IsChecked="{Binding IsAspectLocked}" Content="&#xe1f6;" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Style="{StaticResource label}" Text="{Binding HeightLabel}" />
-            <TextBox Style="{StaticResource textField}" Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"
-                     PreviewTextInput="OnNumericInput" />
+        <TextBlock Grid.Row="2" Style="{StaticResource label}" Text="{Binding HeightLabel}" />
+        <TextBox Grid.Row="2" Grid.Column="1" Style="{StaticResource textField}" Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"
+                 PreviewTextInput="OnNumericInput" />
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button IsCancel="True" Margin="4" MinWidth="75">Cancel</Button>
+            <Button IsDefault="True" Command="{Binding OkCommand}" Margin="4" MinWidth="75">OK</Button>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button IsCancel="True">Cancel</Button>
-            <Button IsDefault="True" Command="{Binding OkCommand}">OK</Button>
-        </StackPanel>
-    </StackPanel>
+    </Grid>
 </local:PopupBase>
